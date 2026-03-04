@@ -4,10 +4,10 @@ go 1.24.0
 
 require (
 	github.com/kamalyes/go-cachex v0.1.9-0.20251224051838-c78da4c8e703
-	github.com/kamalyes/go-config v0.12.14-0.20251224091054-ca041bd7c33b
-	github.com/kamalyes/go-logger v0.4.6-0.20251220131326-ff4bf447209b
+	github.com/kamalyes/go-config v0.13.0
+	github.com/kamalyes/go-logger v0.4.6-0.20260303071637-d3db0a7544df
 	github.com/kamalyes/go-sqlbuilder v0.3.6-0.20251226032117-4cf0dffdff8b
-	github.com/kamalyes/go-toolbox v0.11.87-0.20251226131952-5cab3b04b910
+	github.com/kamalyes/go-toolbox v0.11.87-0.20260304050258-3410505ef79d
 	github.com/redis/go-redis/v9 v9.17.2
 	github.com/stretchr/testify v1.11.1
 	gorm.io/driver/sqlite v1.6.0
@@ -34,6 +34,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kamalyes/go-jsonpath v0.0.0-20260129163507-0b67ed48bb28 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -45,9 +46,9 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	golang.org/x/arch v0.23.0 // indirect
 	golang.org/x/crypto v0.46.0 // indirect
-	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
-	google.golang.org/grpc v1.78.0 // indirect
+	google.golang.org/grpc v1.79.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
