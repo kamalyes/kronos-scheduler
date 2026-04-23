@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 19:30:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 19:34:10
- * @FilePath: \go-scheduler\repository\snapshot_test.go
+ * @FilePath: \kronos-scheduler\repository\snapshot_test.go
  * @Description: 快照仓库测试
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/kamalyes/go-logger"
-	"github.com/kamalyes/go-scheduler/models"
+	"github.com/kamalyes/kronos-scheduler/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gorm.io/driver/sqlite"

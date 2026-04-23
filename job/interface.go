@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 18:36:20
- * @FilePath: \go-scheduler\job\interface.go
+ * @FilePath: \kronos-scheduler\job\interface.go
  * @Description: Job接口定义 - 业务方需要实现此接口
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

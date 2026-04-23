@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 17:00:16
- * @FilePath: \go-scheduler\scheduler\constants.go
+ * @FilePath: \kronos-scheduler\scheduler\constants.go
  * @Description: Scheduler 常量定义 - 包含配置和预定义 Cron 表达式
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

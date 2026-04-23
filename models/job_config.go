@@ -2,8 +2,8 @@
  * @Author: kamalyes 501893067@qq.com
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
- * @LastEditTime: 2025-12-25 13:20:02
- * @FilePath: \go-scheduler\models\job_config.go
+ * @LastEditTime: 2026-04-23 09:29:37
+ * @FilePath: \kronos-scheduler\models\job_config.go
  * @Description: Job配置数据模型
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -13,15 +13,14 @@ package models
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/kamalyes/go-config/pkg/jobs"
 	"github.com/kamalyes/go-toolbox/pkg/serializer"
+	"time"
 )
 
 // JobConfigModel Job配置数据库模型
 type JobConfigModel struct {
-	Id              uint       `gorm:"primaryKey;autoIncrement;comment:主键Id" json:"id"`
+	Id              uint32     `gorm:"primaryKey;autoIncrement;comment:主键Id" json:"id"`
 	JobName         string     `gorm:"type:varchar(100);uniqueIndex;not null;comment:任务名称" json:"job_name"`
 	TaskConfig      string     `gorm:"type:text;not null;comment:任务配置(TaskCfg JSON)" json:"task_config"`
 	ExtraData       string     `gorm:"type:text;comment:额外配置变量(JSON)" json:"extra_data"`

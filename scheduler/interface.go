@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 13:22:19
- * @FilePath: \go-scheduler\scheduler\interface.go
+ * @FilePath: \kronos-scheduler\scheduler\interface.go
  * @Description: 调度器接口定义
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -16,9 +16,9 @@ import (
 	"time"
 
 	"github.com/kamalyes/go-config/pkg/jobs"
-	"github.com/kamalyes/go-scheduler/job"
-	"github.com/kamalyes/go-scheduler/models"
 	"github.com/kamalyes/go-toolbox/pkg/breaker"
+	"github.com/kamalyes/kronos-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/models"
 )
 
 // Scheduler 调度器接口

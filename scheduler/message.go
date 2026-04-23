@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 17:30:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 17:09:06
- * @FilePath: \go-scheduler\scheduler\message.go
+ * @FilePath: \kronos-scheduler\scheduler\message.go
  * @Description: 远程执行和配置管理消息结构
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 15:05:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:10:27
- * @FilePath: \go-scheduler\scheduler\decorator_test.go
+ * @FilePath: \kronos-scheduler\scheduler\decorator_test.go
  * @Description: 装饰器测试 - 职责单一，使用 assert 校验
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kamalyes/go-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/job"
 	"github.com/stretchr/testify/assert"
 )
 

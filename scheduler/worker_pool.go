@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 15:30:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:30:00
- * @FilePath: \go-scheduler\scheduler\worker_pool.go
+ * @FilePath: \kronos-scheduler\scheduler\worker_pool.go
  * @Description: 工作池 - 提供并发任务执行和资源管理
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

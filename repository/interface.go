@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 19:19:16
- * @FilePath: \go-scheduler\repository\interface.go
+ * @FilePath: \kronos-scheduler\repository\interface.go
  * @Description: 仓储接口定义
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -15,7 +15,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/kamalyes/go-scheduler/models"
+	"github.com/kamalyes/kronos-scheduler/models"
 )
 
 // Error messages

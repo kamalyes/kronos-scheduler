@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 15:05:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-26 21:50:45
- * @FilePath: \go-scheduler\scheduler\cron_scheduler.go
+ * @FilePath: \kronos-scheduler\scheduler\cron_scheduler.go
  * @Description: Cron调度器核心实现 - 高性能、链式调用、集成数仓
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -19,16 +19,16 @@ import (
 	"time"
 
 	"github.com/kamalyes/go-config/pkg/jobs"
-	"github.com/kamalyes/go-scheduler/job"
-	"github.com/kamalyes/go-scheduler/logger"
-	"github.com/kamalyes/go-scheduler/models"
-	"github.com/kamalyes/go-scheduler/pubsub"
-	"github.com/kamalyes/go-scheduler/repository"
 	"github.com/kamalyes/go-toolbox/pkg/breaker"
 	"github.com/kamalyes/go-toolbox/pkg/idgen"
 	"github.com/kamalyes/go-toolbox/pkg/osx"
 	"github.com/kamalyes/go-toolbox/pkg/queue"
 	"github.com/kamalyes/go-toolbox/pkg/retry"
+	"github.com/kamalyes/kronos-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/logger"
+	"github.com/kamalyes/kronos-scheduler/models"
+	"github.com/kamalyes/kronos-scheduler/pubsub"
+	"github.com/kamalyes/kronos-scheduler/repository"
 )
 
 // EntryId 任务条目 Id

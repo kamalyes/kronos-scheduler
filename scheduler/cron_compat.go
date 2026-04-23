@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 21:40:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:26:57
- * @FilePath: \go-scheduler\scheduler\cron_compat.go
+ * @FilePath: \kronos-scheduler\scheduler\cron_compat.go
  * @Description: Cron 兼容层 - 兼容 robfig/cron/v3 API，支持平滑迁移
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

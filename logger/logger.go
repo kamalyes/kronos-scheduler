@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:08:58
- * @FilePath: \go-scheduler\logger\logger.go
+ * @FilePath: \kronos-scheduler\logger\logger.go
  * @Description: Logger封装 - 基于 go-logger(类型别名模式，参考 go-wsc)
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -13,6 +13,7 @@ package logger
 
 import (
 	gologger "github.com/kamalyes/go-logger"
+	"time"
 )
 
 // Logger 是 go-logger ILogger 接口的类型别名
@@ -26,7 +27,7 @@ func NewSchedulerLogger(prefix string) Logger {
 		WithLevel(gologger.INFO).
 		WithShowCaller(false).
 		WithColorful(true).
-		WithTimeFormat("2006-01-02 15:04:05")
+		WithTimeFormat(time.RFC3339)
 
 	return gologger.NewLogger(config)
 }

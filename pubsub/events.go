@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 17:55:15
- * @FilePath: \go-scheduler\pubsub\events.go
+ * @FilePath: \kronos-scheduler\pubsub\events.go
  * @Description: 事件定义
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

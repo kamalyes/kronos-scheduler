@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 20:00:00
- * @FilePath: \go-scheduler\job\errors.go
+ * @FilePath: \kronos-scheduler\job\errors.go
  * @Description: Job错误定义
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

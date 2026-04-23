@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 18:00:00
- * @FilePath: \go-scheduler\job\base.go
+ * @FilePath: \kronos-scheduler\job\base.go
  * @Description: 基础Job实现
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

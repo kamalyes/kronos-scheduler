@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-24 10:19:07
- * @FilePath: \go-scheduler\scheduler\job_registry.go
+ * @FilePath: \kronos-scheduler\scheduler\job_registry.go
  * @Description: Job注册器 - 支持从go-config批量注册Job
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -16,8 +16,8 @@ import (
 	"fmt"
 
 	"github.com/kamalyes/go-config/pkg/jobs"
-	"github.com/kamalyes/go-scheduler/job"
-	"github.com/kamalyes/go-scheduler/models"
+	"github.com/kamalyes/kronos-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/models"
 )
 
 // JobRegistry Job注册器 - 基于配置批量注册Job

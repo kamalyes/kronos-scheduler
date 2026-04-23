@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 17:54:15
- * @FilePath: \go-scheduler\scheduler\node_registry.go
+ * @FilePath: \kronos-scheduler\scheduler\node_registry.go
  * @Description: 节点注册器(使用 go-cachex 实现)
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -17,8 +17,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kamalyes/go-scheduler/logger"
-	"github.com/kamalyes/go-scheduler/repository"
+	"github.com/kamalyes/kronos-scheduler/logger"
+	"github.com/kamalyes/kronos-scheduler/repository"
 	"github.com/redis/go-redis/v9"
 )
 

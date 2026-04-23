@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 17:55:05
- * @FilePath: \go-scheduler\pubsub\local.go
+ * @FilePath: \kronos-scheduler\pubsub\local.go
  * @Description: 本地PubSub实现(单机模式，基于channel)
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

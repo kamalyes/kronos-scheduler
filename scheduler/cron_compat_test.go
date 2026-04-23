@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 15:05:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 16:11:20
- * @FilePath: \go-scheduler\scheduler\cron_compat_test.go
+ * @FilePath: \kronos-scheduler\scheduler\cron_compat_test.go
  * @Description: Cron 兼容层测试 - 使用 assert 校验
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

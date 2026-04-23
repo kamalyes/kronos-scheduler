@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 17:54:55
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 10:33:53
- * @FilePath: \go-scheduler\scheduler\errors.go
+ * @FilePath: \kronos-scheduler\scheduler\errors.go
  * @Description:
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

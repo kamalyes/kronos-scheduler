@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 17:16:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 17:16:00
- * @FilePath: \go-scheduler\repository\node.go
+ * @FilePath: \kronos-scheduler\repository\node.go
  * @Description: 节点仓储接口和实现
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

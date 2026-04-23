@@ -1,0 +1,532 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/kamalyes/kronos-scheduler/proto;proto";
+package scheduler;
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Kronos Scheduler Service"
+    description: "调度器服务 | Scheduler Service"
+    version: "1.0.0"
+  }
+  tags: [
+    {
+      name: "JobManagement"
+      description: "任务管理 | Job Management"
+    },
+    {
+      name: "ExecutionManagement"
+      description: "执行记录管理 | Execution Management"
+    },
+    {
+      name: "SchedulerOverview"
+      description: "调度器概览 | Scheduler Overview"
+    },
+    {
+      name: "ThrottleManagement"
+      description: "节流配置管理 | Throttle Management"
+    }
+  ]
+};
+
+//===========================  任务配置消息定义 | Job Config Message Definitions  ==========================//
+
+// 任务类型
+// [EN] Job type
+enum SchedulerJobType {
+  SCHEDULER_JOB_TYPE_UNSPECIFIED = 0;  // 未指定 | [EN] Unspecified
+  SCHEDULER_JOB_TYPE_CRON = 1;         // Cron定时任务 | [EN] Cron job
+  SCHEDULER_JOB_TYPE_PERIODIC = 2;     // 周期任务 | [EN] Periodic job
+  SCHEDULER_JOB_TYPE_MANUAL = 3;       // 手动触发任务 | [EN] Manual trigger job
+  SCHEDULER_JOB_TYPE_SYNCX = 4;        // Syncx任务 | [EN] Syncx job
+}
+
+// 执行状态
+// [EN] Execution status
+enum SchedulerExecutionStatus {
+  SCHEDULER_EXECUTION_STATUS_UNSPECIFIED = 0;    // 未指定 | [EN] Unspecified
+  SCHEDULER_EXECUTION_STATUS_PENDING = 1;        // 等待执行 | [EN] Pending
+  SCHEDULER_EXECUTION_STATUS_RUNNING = 2;        // 执行中 | [EN] Running
+  SCHEDULER_EXECUTION_STATUS_SUCCESS = 3;        // 执行成功 | [EN] Success
+  SCHEDULER_EXECUTION_STATUS_FAILURE = 4;        // 执行失败 | [EN] Failure
+  SCHEDULER_EXECUTION_STATUS_TIMEOUT = 5;        // 执行超时 | [EN] Timeout
+  SCHEDULER_EXECUTION_STATUS_RETRYING = 6;       // 重试中 | [EN] Retrying
+  SCHEDULER_EXECUTION_STATUS_ABORTED = 7;        // 用户中止 | [EN] Aborted
+  SCHEDULER_EXECUTION_STATUS_SYSTEM_ABORTED = 8; // 系统中止 | [EN] System aborted
+  SCHEDULER_EXECUTION_STATUS_SKIPPED = 9;        // 跳过执行 | [EN] Skipped
+}
+
+// 任务状态
+// [EN] Job state
+enum SchedulerJobState {
+  SCHEDULER_JOB_STATE_UNSPECIFIED = 0;  // 未指定 | [EN] Unspecified
+  SCHEDULER_JOB_STATE_ACTIVE = 1;       // 活跃 | [EN] Active
+  SCHEDULER_JOB_STATE_PAUSED = 2;       // 已暂停 | [EN] Paused
+  SCHEDULER_JOB_STATE_DISABLED = 3;     // 已禁用 | [EN] Disabled
+  SCHEDULER_JOB_STATE_ERROR = 4;        // 错误 | [EN] Error
+}
+
+//===========================  任务配置消息定义 | Job Config Message Definitions  ==========================//
+
+// 任务配置信息
+// [EN] Job config information
+message SchedulerJobConfigInfo {
+  uint32 id = 1;                                 // 主键ID | [EN] Primary key ID
+  string job_name = 2;                           // 任务名称 | [EN] Job name
+  string task_config = 3;                        // 任务配置JSON | [EN] Task config JSON
+  string extra_data = 4;                         // 额外配置变量JSON | [EN] Extra data JSON
+  google.protobuf.Timestamp last_executed_at = 5; // 上次执行时间 | [EN] Last executed at
+  google.protobuf.Timestamp next_execution_at = 6; // 下次执行时间 | [EN] Next execution at
+  google.protobuf.Timestamp created_at = 7;      // 创建时间 | [EN] Created at
+  google.protobuf.Timestamp updated_at = 8;      // 更新时间 | [EN] Updated at
+  SchedulerJobState state = 9;                   // 任务状态 | [EN] Job state
+  SchedulerJobType job_type = 10;                // 任务类型 | [EN] Job type
+  string cron_spec = 11;                         // Cron表达式 | [EN] Cron spec
+  int64 execution_count = 12;                    // 执行次数 | [EN] Execution count
+  bool is_running = 13;                          // 是否正在运行 | [EN] Whether running
+}
+
+// 节流配置信息
+// [EN] Throttle config information
+message SchedulerThrottleConfigInfo {
+  int64 cooldown_duration_ms = 1;   // 冷却时间（毫秒） | [EN] Cooldown duration (ms)
+  int64 sleep_duration_ms = 2;      // 睡眠时间（毫秒） | [EN] Sleep duration (ms)
+  int32 max_concurrent = 3;         // 最大并发数 | [EN] Max concurrent
+  int32 rate_limit = 4;             // 速率限制 | [EN] Rate limit
+  int32 burst_size = 5;             // 突发大小 | [EN] Burst size
+  int32 max_queue_size = 6;         // 最大队列大小 | [EN] Max queue size
+  int64 queue_timeout_ms = 7;       // 队列超时（毫秒） | [EN] Queue timeout (ms)
+  int32 max_retries = 8;            // 最大重试次数 | [EN] Max retries
+  int64 retry_delay_ms = 9;         // 重试延迟（毫秒） | [EN] Retry delay (ms)
+  bool retry_backoff = 10;          // 是否启用指数退避 | [EN] Whether exponential backoff
+  int64 max_retry_delay_ms = 11;    // 最大重试延迟（毫秒） | [EN] Max retry delay (ms)
+}
+
+//===========================  执行快照消息定义 | Execution Snapshot Message Definitions  ==========================//
+
+// 执行快照信息
+// [EN] Execution snapshot information
+message SchedulerExecutionSnapshotInfo {
+  uint32 id = 1;                                 // 主键ID | [EN] Primary key ID
+  string trace_id = 2;                           // 跟踪ID | [EN] Trace ID
+  string job_id = 3;                             // 任务ID | [EN] Job ID
+  string job_name = 4;                           // 任务名称 | [EN] Job name
+  SchedulerJobType job_type = 5;                 // 任务类型 | [EN] Job type
+  string node_id = 6;                            // 执行节点ID | [EN] Execution node ID
+  google.protobuf.Timestamp trigger_at = 7;      // 触发时间 | [EN] Trigger at
+  google.protobuf.Timestamp start_time = 8;      // 开始执行时间 | [EN] Start time
+  google.protobuf.Timestamp end_time = 9;        // 结束执行时间 | [EN] End time
+  SchedulerExecutionStatus status = 10;          // 当前状态 | [EN] Current status
+  SchedulerExecutionStatus previous_status = 11; // 上一个状态 | [EN] Previous status
+  int32 exec_frequency = 12;                     // 累计执行次数 | [EN] Total execution count
+  int32 failure_frequency = 13;                  // 累计失败次数 | [EN] Total failure count
+  int32 success_frequency = 14;                  // 累计成功次数 | [EN] Total success count
+  string error = 15;                             // 错误信息 | [EN] Error message
+  string result = 16;                            // 执行结果 | [EN] Execution result
+  string stack_trace = 17;                       // 错误堆栈 | [EN] Stack trace
+  string logs_json = 18;                         // 执行日志JSON | [EN] Execution logs JSON
+  string metrics_json = 19;                      // 性能指标JSON | [EN] Metrics JSON
+  string labels_json = 20;                       // 标签JSON | [EN] Labels JSON
+  google.protobuf.Timestamp created_at = 21;     // 创建时间 | [EN] Created at
+  google.protobuf.Timestamp updated_at = 22;     // 更新时间 | [EN] Updated at
+}
+
+//===========================  请求/响应消息定义 | Request/Response Definitions  ==========================//
+
+// 调度器概览请求
+// [EN] Scheduler overview request
+message SchedulerOverviewRequest {}
+
+// 调度器概览响应
+// [EN] Scheduler overview response
+message SchedulerOverviewResponse {
+  int32 total_jobs = 1;                     // 总任务数 | [EN] Total jobs
+  int32 active_jobs = 2;                    // 活跃任务数 | [EN] Active jobs
+  int32 paused_jobs = 3;                    // 暂停任务数 | [EN] Paused jobs
+  int32 disabled_jobs = 4;                  // 禁用任务数 | [EN] Disabled jobs
+  int32 error_jobs = 5;                     // 错误任务数 | [EN] Error jobs
+  int64 total_count = 6;                    // 总执行数 | [EN] Total count
+  int64 success_count = 7;                  // 成功执行数 | [EN] Success count
+  int64 failure_count = 8;                  // 失败执行数 | [EN] Failure count
+  int64 timeout_count = 9;                  // 超时执行数 | [EN] Timeout count 
+  double success_rate = 10;                 // 成功率 | [EN] Success rate
+  double avg_execution_duration_ms = 11;    // 平均执行时长（毫秒） | [EN] Average execution duration (ms)
+  int32 running_executions = 12;            // 当前运行中执行数 | [EN] Current running executions
+  int64 scheduler_uptime_ms = 13;           // 调度器运行时长（毫秒） | [EN] Scheduler uptime (ms)
+  map<string, int32> jobs_by_type = 14;     // 按类型统计 | [EN] Jobs by type
+}
+
+// 列出任务配置请求
+// [EN] List job configs request
+message SchedulerListJobsRequest {
+  SchedulerJobState filter_state = 1;       // 按状态过滤 | [EN] Filter by state
+  SchedulerJobType filter_type = 2;         // 按类型过滤 | [EN] Filter by type
+  string search = 3;                        // 搜索关键字 | [EN] Search keyword
+  int32 page_size = 4;                      // 分页大小（0=不分页） | [EN] Page size (0=no pagination)
+  string page_token = 5;                    // 分页令牌 | [EN] Page token
+}
+
+// 列出任务配置响应
+// [EN] List job configs response
+message SchedulerListJobsResponse {
+  repeated SchedulerJobConfigInfo jobs = 1; // 任务列表 | [EN] Job list
+  int32 total_count = 2;                    // 符合条件的总任务数 | [EN] Total count
+  string next_page_token = 3;               // 下一页令牌 | [EN] Next page token
+}
+
+// 获取任务配置请求
+// [EN] Get job config request
+message SchedulerGetJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+}
+
+// 获取任务配置响应
+// [EN] Get job config response
+message SchedulerGetJobResponse {
+  SchedulerJobConfigInfo job = 1;                 // 任务配置 | [EN] Job config
+}
+
+// 创建任务配置请求
+// [EN] Create job config request
+message SchedulerCreateJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+  string task_config = 2;                         // 任务配置JSON | [EN] Task config JSON
+  string extra_data = 3;                          // 额外配置变量JSON | [EN] Extra data JSON
+}
+
+// 创建任务配置响应
+// [EN] Create job config response
+message SchedulerCreateJobResponse {
+  SchedulerJobConfigInfo job = 1;                 // 任务配置 | [EN] Job config
+}
+
+// 更新任务配置请求
+// [EN] Update job config request
+message SchedulerUpdateJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+  string task_config = 2;                         // 任务配置JSON | [EN] Task config JSON
+  string extra_data = 3;                          // 额外配置变量JSON | [EN] Extra data JSON
+}
+
+// 更新任务配置响应
+// [EN] Update job config response
+message SchedulerUpdateJobResponse {
+  SchedulerJobConfigInfo job = 1;                 // 任务配置 | [EN] Job config
+}
+
+// 删除任务配置请求
+// [EN] Delete job config request
+message SchedulerDeleteJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+  bool force = 2;                                 // 是否强制删除（运行中也删） | [EN] Whether force delete
+}
+
+// 删除任务配置响应
+// [EN] Delete job config response
+message SchedulerDeleteJobResponse {
+  bool success = 1;                               // 是否成功 | [EN] Whether success
+  string message = 2;                             // 响应描述 | [EN] Response message
+}
+
+// 暂停任务请求
+// [EN] Pause job request
+message SchedulerPauseJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+}
+
+// 暂停任务响应
+// [EN] Pause job response
+message SchedulerPauseJobResponse {
+  bool success = 1;                               // 是否成功 | [EN] Whether success
+  string message = 2;                             // 响应描述 | [EN] Response message
+}
+
+// 恢复任务请求
+// [EN] Resume job request
+message SchedulerResumeJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+}
+
+// 恢复任务响应
+// [EN] Resume job response
+message SchedulerResumeJobResponse {
+  bool success = 1;                               // 是否成功 | [EN] Whether success
+  string message = 2;                             // 响应描述 | [EN] Response message
+}
+
+// 手动触发任务请求
+// [EN] Manual trigger job request
+message SchedulerTriggerJobRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+  map<string, string> parameters = 2;             // 触发参数 | [EN] Trigger parameters
+}
+
+// 手动触发任务响应
+// [EN] Manual trigger job response
+message SchedulerTriggerJobResponse {
+  bool accepted = 1;                              // 是否接受 | [EN] Whether accepted
+  string message = 2;                             // 响应描述 | [EN] Response message
+  string trace_id = 3;                            // 跟踪ID | [EN] Trace ID
+}
+
+// 列出执行快照请求
+// [EN] List execution snapshots request
+message SchedulerListExecutionsRequest {
+  string job_name = 1;                            // 按任务名过滤 | [EN] Filter by job name
+  SchedulerExecutionStatus filter_status = 2;     // 按状态过滤 | [EN] Filter by status
+  SchedulerJobType filter_type = 3;               // 按类型过滤 | [EN] Filter by type
+  string node_id = 4;                             // 按节点过滤 | [EN] Filter by node
+  int64 start_time_ms = 5;                        // 开始时间（毫秒时间戳） | [EN] Start time (ms timestamp)
+  int64 end_time_ms = 6;                          // 结束时间（毫秒时间戳） | [EN] End time (ms timestamp)
+  int32 page_size = 7;                            // 分页大小（0=不分页） | [EN] Page size (0=no pagination)
+  string page_token = 8;                          // 分页令牌 | [EN] Page token
+}
+
+// 列出执行快照响应
+// [EN] List execution snapshots response
+message SchedulerListExecutionsResponse {
+  repeated SchedulerExecutionSnapshotInfo executions = 1; // 执行快照列表 | [EN] Execution snapshot list
+  int32 total_count = 2;                                  // 符合条件的总记录数 | [EN] Total count
+  string next_page_token = 3;                             // 下一页令牌 | [EN] Next page token
+}
+
+// 获取执行快照详情请求
+// [EN] Get execution snapshot detail request
+message SchedulerGetExecutionRequest {
+  string trace_id = 1;                            // 跟踪ID | [EN] Trace ID
+}
+
+// 获取执行快照详情响应
+// [EN] Get execution snapshot detail response
+message SchedulerGetExecutionResponse {
+  SchedulerExecutionSnapshotInfo execution = 1;   // 执行快照 | [EN] Execution snapshot
+}
+
+// 中止执行请求
+// [EN] Abort execution request
+message SchedulerAbortExecutionRequest {
+  string trace_id = 1;                            // 跟踪ID | [EN] Trace ID
+  string reason = 2;                              // 中止原因 | [EN] Abort reason
+}
+
+// 中止执行响应
+// [EN] Abort execution response
+message SchedulerAbortExecutionResponse {
+  bool success = 1;                               // 是否成功 | [EN] Whether success
+  string message = 2;                             // 响应描述 | [EN] Response message
+}
+
+// 重试执行请求
+// [EN] Retry execution request
+message SchedulerRetryExecutionRequest {
+  string trace_id = 1;                            // 跟踪ID | [EN] Trace ID
+}
+
+// 重试执行响应
+// [EN] Retry execution response
+message SchedulerRetryExecutionResponse {
+  bool accepted = 1;                              // 是否接受 | [EN] Whether accepted
+  string message = 2;                             // 响应描述 | [EN] Response message
+  string new_trace_id = 3;                        // 新跟踪ID | [EN] New trace ID
+}
+
+// 获取节流配置请求
+// [EN] Get throttle config request
+message SchedulerGetThrottleConfigRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+}
+
+// 获取节流配置响应
+// [EN] Get throttle config response
+message SchedulerGetThrottleConfigResponse {
+  SchedulerThrottleConfigInfo throttle_config = 1; // 节流配置 | [EN] Throttle config
+}
+
+// 更新节流配置请求
+// [EN] Update throttle config request
+message SchedulerUpdateThrottleConfigRequest {
+  string job_name = 1;                            // 任务名称 | [EN] Job name
+  SchedulerThrottleConfigInfo throttle_config = 2; // 节流配置 | [EN] Throttle config
+}
+
+// 更新节流配置响应
+// [EN] Update throttle config response
+message SchedulerUpdateThrottleConfigResponse {
+  bool success = 1;                               // 是否成功 | [EN] Whether success
+  string message = 2;                             // 响应描述 | [EN] Response message
+}
+
+//===========================  服务定义 | Service Definition  ==========================//
+
+// 调度器服务
+// [EN] Scheduler Service
+service SchedulerService {
+  // 调度器概览
+  // [EN] Scheduler overview
+  rpc SchedulerOverview(SchedulerOverviewRequest) returns (SchedulerOverviewResponse) {
+    option (google.api.http) = { get: "/v1/scheduler/overview" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "调度器概览 | Scheduler overview"
+      description: "获取调度器整体概览信息 | Get scheduler overview information"
+      tags: "SchedulerOverview"
+    };
+  }
+
+  // 列出任务
+  // [EN] List jobs
+  rpc SchedulerListJobs(SchedulerListJobsRequest) returns (SchedulerListJobsResponse) {
+    option (google.api.http) = { get: "/v1/scheduler/jobs" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "列出任务 | List jobs"
+      description: "列出所有调度任务 | List all scheduled jobs"
+      tags: "JobManagement"
+    };
+  }
+
+  // 获取任务详情
+  // [EN] Get job detail
+  rpc SchedulerGetJob(SchedulerGetJobRequest) returns (SchedulerGetJobResponse) {
+    option (google.api.http) = { get: "/v1/scheduler/jobs/{job_name}" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "获取任务详情 | Get job detail"
+      description: "获取指定任务的详细信息 | Get detailed information of a specific job"
+      tags: "JobManagement"
+    };
+  }
+
+  // 创建任务
+  // [EN] Create job
+  rpc SchedulerCreateJob(SchedulerCreateJobRequest) returns (SchedulerCreateJobResponse) {
+    option (google.api.http) = { post: "/v1/scheduler/jobs" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "创建任务 | Create job"
+      description: "创建新的调度任务 | Create a new scheduled job"
+      tags: "JobManagement"
+    };
+  }
+
+  // 更新任务
+  // [EN] Update job
+  rpc SchedulerUpdateJob(SchedulerUpdateJobRequest) returns (SchedulerUpdateJobResponse) {
+    option (google.api.http) = { put: "/v1/scheduler/jobs/{job_name}" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "更新任务 | Update job"
+      description: "更新调度任务配置 | Update scheduled job config"
+      tags: "JobManagement"
+    };
+  }
+
+  // 删除任务
+  // [EN] Delete job
+  rpc SchedulerDeleteJob(SchedulerDeleteJobRequest) returns (SchedulerDeleteJobResponse) {
+    option (google.api.http) = { delete: "/v1/scheduler/jobs/{job_name}" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "删除任务 | Delete job"
+      description: "删除调度任务 | Delete a scheduled job"
+      tags: "JobManagement"
+    };
+  }
+
+  // 暂停任务
+  // [EN] Pause job
+  rpc SchedulerPauseJob(SchedulerPauseJobRequest) returns (SchedulerPauseJobResponse) {
+    option (google.api.http) = { put: "/v1/scheduler/jobs/{job_name}/pause" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "暂停任务 | Pause job"
+      description: "暂停调度任务 | Pause a scheduled job"
+      tags: "JobManagement"
+    };
+  }
+
+  // 恢复任务
+  // [EN] Resume job
+  rpc SchedulerResumeJob(SchedulerResumeJobRequest) returns (SchedulerResumeJobResponse) {
+    option (google.api.http) = { put: "/v1/scheduler/jobs/{job_name}/resume" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "恢复任务 | Resume job"
+      description: "恢复暂停的调度任务 | Resume a paused job"
+      tags: "JobManagement"
+    };
+  }
+
+  // 手动触发任务
+  // [EN] Manual trigger job
+  rpc SchedulerTriggerJob(SchedulerTriggerJobRequest) returns (SchedulerTriggerJobResponse) {
+    option (google.api.http) = { post: "/v1/scheduler/jobs/{job_name}/trigger" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "手动触发任务 | Manual trigger job"
+      description: "手动触发调度任务执行 | Manually trigger a job execution"
+      tags: "JobManagement"
+    };
+  }
+
+  // 列出执行记录
+  // [EN] List executions
+  rpc SchedulerListExecutions(SchedulerListExecutionsRequest) returns (SchedulerListExecutionsResponse) {
+    option (google.api.http) = { get: "/v1/scheduler/executions" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "列出执行记录 | List executions"
+      description: "列出任务执行记录 | List job execution records"
+      tags: "ExecutionManagement"
+    };
+  }
+
+  // 获取执行详情
+  // [EN] Get execution detail
+  rpc SchedulerGetExecution(SchedulerGetExecutionRequest) returns (SchedulerGetExecutionResponse) {
+    option (google.api.http) = { get: "/v1/scheduler/executions/{trace_id}" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "获取执行详情 | Get execution detail"
+      description: "获取任务执行详情 | Get job execution detail"
+      tags: "ExecutionManagement"
+    };
+  }
+
+  // 中止执行
+  // [EN] Abort execution
+  rpc SchedulerAbortExecution(SchedulerAbortExecutionRequest) returns (SchedulerAbortExecutionResponse) {
+    option (google.api.http) = { put: "/v1/scheduler/executions/{trace_id}/abort" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "中止执行 | Abort execution"
+      description: "中止正在执行的任务 | Abort a running execution"
+      tags: "ExecutionManagement"
+    };
+  }
+
+  // 重试执行
+  // [EN] Retry execution
+  rpc SchedulerRetryExecution(SchedulerRetryExecutionRequest) returns (SchedulerRetryExecutionResponse) {
+    option (google.api.http) = { put: "/v1/scheduler/executions/{trace_id}/retry" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "重试执行 | Retry execution"
+      description: "重试失败的任务执行 | Retry a failed execution"
+      tags: "ExecutionManagement"
+    };
+  }
+
+  // 获取节流配置
+  // [EN] Get throttle config
+  rpc SchedulerGetThrottleConfig(SchedulerGetThrottleConfigRequest) returns (SchedulerGetThrottleConfigResponse) {
+    option (google.api.http) = { get: "/v1/scheduler/jobs/{job_name}/throttle" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "获取节流配置 | Get throttle config"
+      description: "获取任务的节流配置 | Get throttle config of a job"
+      tags: "ThrottleManagement"
+    };
+  }
+
+  // 更新节流配置
+  // [EN] Update throttle config
+  rpc SchedulerUpdateThrottleConfig(SchedulerUpdateThrottleConfigRequest) returns (SchedulerUpdateThrottleConfigResponse) {
+    option (google.api.http) = { put: "/v1/scheduler/jobs/{job_name}/throttle" body: "*" };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "更新节流配置 | Update throttle config"
+      description: "更新任务的节流配置 | Update throttle config of a job"
+      tags: "ThrottleManagement"
+    };
+  }
+}

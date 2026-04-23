@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 18:54:34
- * @FilePath: \go-scheduler\job\wrapper.go
+ * @FilePath: \kronos-scheduler\job\wrapper.go
  * @Description: Job包装器 - 提供超时、重试、重叠防止等功能
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 21:30:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 19:32:30
- * @FilePath: \go-scheduler\scheduler\decorator.go
+ * @FilePath: \kronos-scheduler\scheduler\decorator.go
  * @Description: 任务装饰器 - 提供链式调用、日志、恢复、延迟等能力
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -18,8 +18,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kamalyes/go-scheduler/job"
-	"github.com/kamalyes/go-scheduler/logger"
+	"github.com/kamalyes/kronos-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/logger"
 	"github.com/kamalyes/go-toolbox/pkg/breaker"
 	"github.com/kamalyes/go-toolbox/pkg/mathx"
 )

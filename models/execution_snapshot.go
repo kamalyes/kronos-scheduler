@@ -2,8 +2,8 @@
  * @Author: kamalyes 501893067@qq.com
  * @Date: 2025-12-25 15:10:00
  * @LastEditors: kamalyes 501893067@qq.com
- * @LastEditTime: 2025-12-25 18:55:55
- * @FilePath: \go-scheduler\models\execution_snapshot.go
+ * @LastEditTime: 2026-04-23 09:29:53
+ * @FilePath: \kronos-scheduler\models\execution_snapshot.go
  * @Description: 任务执行快照 - 记录任务执行的详细信息和指标
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -13,9 +13,8 @@ package models
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	"time"
 )
 
 // JobType 任务类型
@@ -89,7 +88,7 @@ func (s ExecutionStatus) IsTerminal() bool {
 
 // ExecutionSnapshotModel 执行快照数据库模型
 type ExecutionSnapshotModel struct {
-	ID               uint            `gorm:"primaryKey;autoIncrement;comment:主键ID" json:"id"`
+	ID               uint32          `gorm:"primaryKey;autoIncrement;comment:主键ID" json:"id"`
 	TraceID          string          `gorm:"type:varchar(100);uniqueIndex;not null;comment:跟踪ID" json:"trace_id"`
 	JobID            string          `gorm:"type:varchar(100);index;not null;comment:任务ID" json:"job_id"`
 	JobName          string          `gorm:"type:varchar(200);index;comment:任务名称" json:"job_name"`

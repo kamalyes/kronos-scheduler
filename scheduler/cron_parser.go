@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 15:05:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 16:10:05
- * @FilePath: \go-scheduler\scheduler\cron_parser.go
+ * @FilePath: \kronos-scheduler\scheduler\cron_parser.go
  * @Description: Cron表达式解析器适配层 - 使用 go-toolbox/pkg/cron 的实现
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

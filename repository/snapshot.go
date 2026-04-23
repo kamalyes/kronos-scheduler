@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 17:45:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 19:55:05
- * @FilePath: \go-scheduler\repository\snapshot.go
+ * @FilePath: \kronos-scheduler\repository\snapshot.go
  * @Description: 基于 GORM 的快照仓库实现 - 支持单机和分布式
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -17,10 +17,10 @@ import (
 	"time"
 
 	"github.com/kamalyes/go-logger"
-	"github.com/kamalyes/go-scheduler/models"
 	"github.com/kamalyes/go-sqlbuilder/constants"
 	sqldb "github.com/kamalyes/go-sqlbuilder/db"
 	sqlrepo "github.com/kamalyes/go-sqlbuilder/repository"
+	"github.com/kamalyes/kronos-scheduler/models"
 	"gorm.io/gorm"
 )
 

@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 15:05:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:15:27
- * @FilePath: \go-scheduler\scheduler\protector.go
+ * @FilePath: \kronos-scheduler\scheduler\protector.go
  * @Description: 任务保护器(熔断器保护)
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 17:25:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 17:01:59
- * @FilePath: \go-scheduler\scheduler\loader.go
+ * @FilePath: \kronos-scheduler\scheduler\loader.go
  * @Description: 配置加载器 - 启动时加载配置的策略
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -16,7 +16,7 @@ import (
 	"fmt"
 
 	"github.com/kamalyes/go-config/pkg/jobs"
-	"github.com/kamalyes/go-scheduler/models"
+	"github.com/kamalyes/kronos-scheduler/models"
 )
 
 // LoadStrategy 配置加载策略

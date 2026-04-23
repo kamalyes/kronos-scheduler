@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 18:00:00
- * @FilePath: \go-scheduler\pubsub\redis.go
+ * @FilePath: \kronos-scheduler\pubsub\redis.go
  * @Description: Redis PubSub实现(基于 go-cachex)
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

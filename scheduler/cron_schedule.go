@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 21:30:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 11:15:26
- * @FilePath: \go-scheduler\scheduler\cron_schedule.go
+ * @FilePath: \kronos-scheduler\scheduler\cron_schedule.go
  * @Description: Cron调度规范 - 使用 go-toolbox/pkg/cron 的实现
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

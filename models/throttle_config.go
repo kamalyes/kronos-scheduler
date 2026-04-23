@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 15:20:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:20:00
- * @FilePath: \go-scheduler\models\throttle_config.go
+ * @FilePath: \kronos-scheduler\models\throttle_config.go
  * @Description: 节流配置 - 提供任务执行的流量控制和限速功能
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

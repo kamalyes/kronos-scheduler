@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 17:20:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 17:17:55
- * @FilePath: \go-scheduler\scheduler\remote_executor.go
+ * @FilePath: \kronos-scheduler\scheduler\remote_executor.go
  * @Description: 远程执行器 - 订阅 Redis 消息执行任务
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/kamalyes/go-config/pkg/jobs"
-	"github.com/kamalyes/go-scheduler/models"
+	"github.com/kamalyes/kronos-scheduler/models"
 	"github.com/redis/go-redis/v9"
 )
 

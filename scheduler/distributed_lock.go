@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 21:45:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 21:53:06
- * @FilePath: \go-scheduler\scheduler\distributed_lock.go
+ * @FilePath: \kronos-scheduler\scheduler\distributed_lock.go
  * @Description: 分布式锁装饰器 - 基于 go-cachex LockManager，支持任务互斥和分片
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.
@@ -15,7 +15,7 @@ import (
 	"context"
 
 	"github.com/kamalyes/go-cachex"
-	"github.com/kamalyes/go-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/job"
 )
 
 // WithCachexLock 使用 go-cachex LockManager 的分布式锁装饰器

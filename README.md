@@ -1,4 +1,4 @@
-# go-scheduler
+# kronos-scheduler
 
 🚀 一个强大、灵活、可复用的 Go 任务调度框架，基于 robfig/cron/v3 构建
 
@@ -194,7 +194,7 @@ graph LR
 ### 安装
 
 ```bash
-go get github.com/kamalyes/go-scheduler
+go get github.com/kamalyes/kronos-scheduler
 ```
 
 ### 基础示例
@@ -207,9 +207,9 @@ import (
     "fmt"
     
     "github.com/kamalyes/go-config/pkg/jobs"
-    "github.com/kamalyes/go-scheduler/scheduler"
-    "github.com/kamalyes/go-scheduler/job"
-    "github.com/kamalyes/go-scheduler/pubsub"
+    "github.com/kamalyes/kronos-scheduler/scheduler"
+    "github.com/kamalyes/kronos-scheduler/job"
+    "github.com/kamalyes/kronos-scheduler/pubsub"
 )
 
 // 1. 定义任务
@@ -367,7 +367,7 @@ graph LR
 ## 项目结构
 
 ```
-go-scheduler/
+kronos-scheduler/
 ├── docs/              # 📚 文档目录
 │   ├── QUICKSTART.md  # 快速开始
 │   ├── CONCEPTS.md    # 核心概念

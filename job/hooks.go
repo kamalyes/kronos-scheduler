@@ -3,7 +3,7 @@
  * @Date: 2025-12-25 15:15:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-25 15:15:00
- * @FilePath: \go-scheduler\job\hooks.go
+ * @FilePath: \kronos-scheduler\job\hooks.go
  * @Description: 任务生命周期钩子 - 提供任务执行前后的钩子机制
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

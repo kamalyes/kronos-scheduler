@@ -3,7 +3,7 @@
  * @Date: 2025-12-23 00:00:00
  * @LastEditors: kamalyes 501893067@qq.com
  * @LastEditTime: 2025-12-23 21:20:00
- * @FilePath: \go-scheduler\job\sharding.go
+ * @FilePath: \kronos-scheduler\job\sharding.go
  * @Description: 任务分片执行 - Map-Reduce风格
  *
  * Copyright (c) 2025 by kamalyes, All Rights Reserved.

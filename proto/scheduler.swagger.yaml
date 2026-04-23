@@ -1,0 +1,1078 @@
+swagger: "2.0"
+info:
+  title: Kronos Scheduler Service
+  description: 调度器服务 | Scheduler Service
+  version: 1.0.0
+tags:
+  - name: JobManagement
+    description: 任务管理 | Job Management
+  - name: ExecutionManagement
+    description: 执行记录管理 | Execution Management
+  - name: SchedulerOverview
+    description: 调度器概览 | Scheduler Overview
+  - name: ThrottleManagement
+    description: 节流配置管理 | Throttle Management
+  - name: SchedulerService
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /v1/scheduler/executions:
+    get:
+      summary: 列出执行记录 | List executions
+      description: 列出任务执行记录 | List job execution records
+      operationId: SchedulerService_SchedulerListExecutions
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerListExecutionsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 按任务名过滤 | [EN] Filter by job name
+          in: query
+          required: false
+          type: string
+        - name: filter_status
+          description: |-
+            按状态过滤 | [EN] Filter by status
+
+             - SCHEDULER_EXECUTION_STATUS_UNSPECIFIED: 未指定 | [EN] Unspecified
+             - SCHEDULER_EXECUTION_STATUS_PENDING: 等待执行 | [EN] Pending
+             - SCHEDULER_EXECUTION_STATUS_RUNNING: 执行中 | [EN] Running
+             - SCHEDULER_EXECUTION_STATUS_SUCCESS: 执行成功 | [EN] Success
+             - SCHEDULER_EXECUTION_STATUS_FAILURE: 执行失败 | [EN] Failure
+             - SCHEDULER_EXECUTION_STATUS_TIMEOUT: 执行超时 | [EN] Timeout
+             - SCHEDULER_EXECUTION_STATUS_RETRYING: 重试中 | [EN] Retrying
+             - SCHEDULER_EXECUTION_STATUS_ABORTED: 用户中止 | [EN] Aborted
+             - SCHEDULER_EXECUTION_STATUS_SYSTEM_ABORTED: 系统中止 | [EN] System aborted
+             - SCHEDULER_EXECUTION_STATUS_SKIPPED: 跳过执行 | [EN] Skipped
+          in: query
+          required: false
+          type: string
+          enum:
+            - SCHEDULER_EXECUTION_STATUS_UNSPECIFIED
+            - SCHEDULER_EXECUTION_STATUS_PENDING
+            - SCHEDULER_EXECUTION_STATUS_RUNNING
+            - SCHEDULER_EXECUTION_STATUS_SUCCESS
+            - SCHEDULER_EXECUTION_STATUS_FAILURE
+            - SCHEDULER_EXECUTION_STATUS_TIMEOUT
+            - SCHEDULER_EXECUTION_STATUS_RETRYING
+            - SCHEDULER_EXECUTION_STATUS_ABORTED
+            - SCHEDULER_EXECUTION_STATUS_SYSTEM_ABORTED
+            - SCHEDULER_EXECUTION_STATUS_SKIPPED
+          default: SCHEDULER_EXECUTION_STATUS_UNSPECIFIED
+        - name: filter_type
+          description: |-
+            按类型过滤 | [EN] Filter by type
+
+             - SCHEDULER_JOB_TYPE_UNSPECIFIED: 未指定 | [EN] Unspecified
+             - SCHEDULER_JOB_TYPE_CRON: Cron定时任务 | [EN] Cron job
+             - SCHEDULER_JOB_TYPE_PERIODIC: 周期任务 | [EN] Periodic job
+             - SCHEDULER_JOB_TYPE_MANUAL: 手动触发任务 | [EN] Manual trigger job
+             - SCHEDULER_JOB_TYPE_SYNCX: Syncx任务 | [EN] Syncx job
+          in: query
+          required: false
+          type: string
+          enum:
+            - SCHEDULER_JOB_TYPE_UNSPECIFIED
+            - SCHEDULER_JOB_TYPE_CRON
+            - SCHEDULER_JOB_TYPE_PERIODIC
+            - SCHEDULER_JOB_TYPE_MANUAL
+            - SCHEDULER_JOB_TYPE_SYNCX
+          default: SCHEDULER_JOB_TYPE_UNSPECIFIED
+        - name: node_id
+          description: 按节点过滤 | [EN] Filter by node
+          in: query
+          required: false
+          type: string
+        - name: start_time_ms
+          description: 开始时间（毫秒时间戳） | [EN] Start time (ms timestamp)
+          in: query
+          required: false
+          type: string
+          format: int64
+        - name: end_time_ms
+          description: 结束时间（毫秒时间戳） | [EN] End time (ms timestamp)
+          in: query
+          required: false
+          type: string
+          format: int64
+        - name: page_size
+          description: 分页大小（0=不分页） | [EN] Page size (0=no pagination)
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page_token
+          description: 分页令牌 | [EN] Page token
+          in: query
+          required: false
+          type: string
+      tags:
+        - ExecutionManagement
+  /v1/scheduler/executions/{trace_id}:
+    get:
+      summary: 获取执行详情 | Get execution detail
+      description: 获取任务执行详情 | Get job execution detail
+      operationId: SchedulerService_SchedulerGetExecution
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerGetExecutionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: trace_id
+          description: 跟踪ID | [EN] Trace ID
+          in: path
+          required: true
+          type: string
+      tags:
+        - ExecutionManagement
+  /v1/scheduler/executions/{trace_id}/abort:
+    put:
+      summary: 中止执行 | Abort execution
+      description: 中止正在执行的任务 | Abort a running execution
+      operationId: SchedulerService_SchedulerAbortExecution
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerAbortExecutionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: trace_id
+          description: 跟踪ID | [EN] Trace ID
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerAbortExecutionBody'
+      tags:
+        - ExecutionManagement
+  /v1/scheduler/executions/{trace_id}/retry:
+    put:
+      summary: 重试执行 | Retry execution
+      description: 重试失败的任务执行 | Retry a failed execution
+      operationId: SchedulerService_SchedulerRetryExecution
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerRetryExecutionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: trace_id
+          description: 跟踪ID | [EN] Trace ID
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerRetryExecutionBody'
+      tags:
+        - ExecutionManagement
+  /v1/scheduler/jobs:
+    get:
+      summary: 列出任务 | List jobs
+      description: 列出所有调度任务 | List all scheduled jobs
+      operationId: SchedulerService_SchedulerListJobs
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerListJobsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: filter_state
+          description: |-
+            按状态过滤 | [EN] Filter by state
+
+             - SCHEDULER_JOB_STATE_UNSPECIFIED: 未指定 | [EN] Unspecified
+             - SCHEDULER_JOB_STATE_ACTIVE: 活跃 | [EN] Active
+             - SCHEDULER_JOB_STATE_PAUSED: 已暂停 | [EN] Paused
+             - SCHEDULER_JOB_STATE_DISABLED: 已禁用 | [EN] Disabled
+             - SCHEDULER_JOB_STATE_ERROR: 错误 | [EN] Error
+          in: query
+          required: false
+          type: string
+          enum:
+            - SCHEDULER_JOB_STATE_UNSPECIFIED
+            - SCHEDULER_JOB_STATE_ACTIVE
+            - SCHEDULER_JOB_STATE_PAUSED
+            - SCHEDULER_JOB_STATE_DISABLED
+            - SCHEDULER_JOB_STATE_ERROR
+          default: SCHEDULER_JOB_STATE_UNSPECIFIED
+        - name: filter_type
+          description: |-
+            按类型过滤 | [EN] Filter by type
+
+             - SCHEDULER_JOB_TYPE_UNSPECIFIED: 未指定 | [EN] Unspecified
+             - SCHEDULER_JOB_TYPE_CRON: Cron定时任务 | [EN] Cron job
+             - SCHEDULER_JOB_TYPE_PERIODIC: 周期任务 | [EN] Periodic job
+             - SCHEDULER_JOB_TYPE_MANUAL: 手动触发任务 | [EN] Manual trigger job
+             - SCHEDULER_JOB_TYPE_SYNCX: Syncx任务 | [EN] Syncx job
+          in: query
+          required: false
+          type: string
+          enum:
+            - SCHEDULER_JOB_TYPE_UNSPECIFIED
+            - SCHEDULER_JOB_TYPE_CRON
+            - SCHEDULER_JOB_TYPE_PERIODIC
+            - SCHEDULER_JOB_TYPE_MANUAL
+            - SCHEDULER_JOB_TYPE_SYNCX
+          default: SCHEDULER_JOB_TYPE_UNSPECIFIED
+        - name: search
+          description: 搜索关键字 | [EN] Search keyword
+          in: query
+          required: false
+          type: string
+        - name: page_size
+          description: 分页大小（0=不分页） | [EN] Page size (0=no pagination)
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: page_token
+          description: 分页令牌 | [EN] Page token
+          in: query
+          required: false
+          type: string
+      tags:
+        - JobManagement
+    post:
+      summary: 创建任务 | Create job
+      description: 创建新的调度任务 | Create a new scheduled job
+      operationId: SchedulerService_SchedulerCreateJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerCreateJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/schedulerSchedulerCreateJobRequest'
+      tags:
+        - JobManagement
+  /v1/scheduler/jobs/{job_name}:
+    get:
+      summary: 获取任务详情 | Get job detail
+      description: 获取指定任务的详细信息 | Get detailed information of a specific job
+      operationId: SchedulerService_SchedulerGetJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerGetJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+      tags:
+        - JobManagement
+    delete:
+      summary: 删除任务 | Delete job
+      description: 删除调度任务 | Delete a scheduled job
+      operationId: SchedulerService_SchedulerDeleteJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerDeleteJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+        - name: force
+          description: 是否强制删除（运行中也删） | [EN] Whether force delete
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - JobManagement
+    put:
+      summary: 更新任务 | Update job
+      description: 更新调度任务配置 | Update scheduled job config
+      operationId: SchedulerService_SchedulerUpdateJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerUpdateJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerUpdateJobBody'
+      tags:
+        - JobManagement
+  /v1/scheduler/jobs/{job_name}/pause:
+    put:
+      summary: 暂停任务 | Pause job
+      description: 暂停调度任务 | Pause a scheduled job
+      operationId: SchedulerService_SchedulerPauseJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerPauseJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerPauseJobBody'
+      tags:
+        - JobManagement
+  /v1/scheduler/jobs/{job_name}/resume:
+    put:
+      summary: 恢复任务 | Resume job
+      description: 恢复暂停的调度任务 | Resume a paused job
+      operationId: SchedulerService_SchedulerResumeJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerResumeJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerResumeJobBody'
+      tags:
+        - JobManagement
+  /v1/scheduler/jobs/{job_name}/throttle:
+    get:
+      summary: 获取节流配置 | Get throttle config
+      description: 获取任务的节流配置 | Get throttle config of a job
+      operationId: SchedulerService_SchedulerGetThrottleConfig
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerGetThrottleConfigResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+      tags:
+        - ThrottleManagement
+    put:
+      summary: 更新节流配置 | Update throttle config
+      description: 更新任务的节流配置 | Update throttle config of a job
+      operationId: SchedulerService_SchedulerUpdateThrottleConfig
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerUpdateThrottleConfigResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerUpdateThrottleConfigBody'
+      tags:
+        - ThrottleManagement
+  /v1/scheduler/jobs/{job_name}/trigger:
+    post:
+      summary: 手动触发任务 | Manual trigger job
+      description: 手动触发调度任务执行 | Manually trigger a job execution
+      operationId: SchedulerService_SchedulerTriggerJob
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerTriggerJobResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: job_name
+          description: 任务名称 | [EN] Job name
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/SchedulerServiceSchedulerTriggerJobBody'
+      tags:
+        - JobManagement
+  /v1/scheduler/overview:
+    get:
+      summary: 调度器概览 | Scheduler overview
+      description: 获取调度器整体概览信息 | Get scheduler overview information
+      operationId: SchedulerService_SchedulerOverview
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/schedulerSchedulerOverviewResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - SchedulerOverview
+definitions:
+  SchedulerServiceSchedulerAbortExecutionBody:
+    type: object
+    properties:
+      reason:
+        type: string
+        title: 中止原因 | [EN] Abort reason
+    title: |-
+      中止执行请求
+      [EN] Abort execution request
+  SchedulerServiceSchedulerPauseJobBody:
+    type: object
+    title: |-
+      暂停任务请求
+      [EN] Pause job request
+  SchedulerServiceSchedulerResumeJobBody:
+    type: object
+    title: |-
+      恢复任务请求
+      [EN] Resume job request
+  SchedulerServiceSchedulerRetryExecutionBody:
+    type: object
+    title: |-
+      重试执行请求
+      [EN] Retry execution request
+  SchedulerServiceSchedulerTriggerJobBody:
+    type: object
+    properties:
+      parameters:
+        type: object
+        additionalProperties:
+          type: string
+        title: 触发参数 | [EN] Trigger parameters
+    title: |-
+      手动触发任务请求
+      [EN] Manual trigger job request
+  SchedulerServiceSchedulerUpdateJobBody:
+    type: object
+    properties:
+      task_config:
+        type: string
+        title: 任务配置JSON | [EN] Task config JSON
+      extra_data:
+        type: string
+        title: 额外配置变量JSON | [EN] Extra data JSON
+    title: |-
+      更新任务配置请求
+      [EN] Update job config request
+  SchedulerServiceSchedulerUpdateThrottleConfigBody:
+    type: object
+    properties:
+      throttle_config:
+        $ref: '#/definitions/schedulerSchedulerThrottleConfigInfo'
+        title: 节流配置 | [EN] Throttle config
+    title: |-
+      更新节流配置请求
+      [EN] Update throttle config request
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
+  schedulerSchedulerAbortExecutionResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        title: 是否成功 | [EN] Whether success
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+    title: |-
+      中止执行响应
+      [EN] Abort execution response
+  schedulerSchedulerCreateJobRequest:
+    type: object
+    properties:
+      job_name:
+        type: string
+        title: 任务名称 | [EN] Job name
+      task_config:
+        type: string
+        title: 任务配置JSON | [EN] Task config JSON
+      extra_data:
+        type: string
+        title: 额外配置变量JSON | [EN] Extra data JSON
+    title: |-
+      创建任务配置请求
+      [EN] Create job config request
+  schedulerSchedulerCreateJobResponse:
+    type: object
+    properties:
+      job:
+        $ref: '#/definitions/schedulerSchedulerJobConfigInfo'
+        title: 任务配置 | [EN] Job config
+    title: |-
+      创建任务配置响应
+      [EN] Create job config response
+  schedulerSchedulerDeleteJobResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        title: 是否成功 | [EN] Whether success
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+    title: |-
+      删除任务配置响应
+      [EN] Delete job config response
+  schedulerSchedulerExecutionSnapshotInfo:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        title: 主键ID | [EN] Primary key ID
+      trace_id:
+        type: string
+        title: 跟踪ID | [EN] Trace ID
+      job_id:
+        type: string
+        title: 任务ID | [EN] Job ID
+      job_name:
+        type: string
+        title: 任务名称 | [EN] Job name
+      job_type:
+        $ref: '#/definitions/schedulerSchedulerJobType'
+        title: 任务类型 | [EN] Job type
+      node_id:
+        type: string
+        title: 执行节点ID | [EN] Execution node ID
+      trigger_at:
+        type: string
+        format: date-time
+        title: 触发时间 | [EN] Trigger at
+      start_time:
+        type: string
+        format: date-time
+        title: 开始执行时间 | [EN] Start time
+      end_time:
+        type: string
+        format: date-time
+        title: 结束执行时间 | [EN] End time
+      status:
+        $ref: '#/definitions/schedulerSchedulerExecutionStatus'
+        title: 当前状态 | [EN] Current status
+      previous_status:
+        $ref: '#/definitions/schedulerSchedulerExecutionStatus'
+        title: 上一个状态 | [EN] Previous status
+      exec_frequency:
+        type: integer
+        format: int32
+        title: 累计执行次数 | [EN] Total execution count
+      failure_frequency:
+        type: integer
+        format: int32
+        title: 累计失败次数 | [EN] Total failure count
+      success_frequency:
+        type: integer
+        format: int32
+        title: 累计成功次数 | [EN] Total success count
+      error:
+        type: string
+        title: 错误信息 | [EN] Error message
+      result:
+        type: string
+        title: 执行结果 | [EN] Execution result
+      stack_trace:
+        type: string
+        title: 错误堆栈 | [EN] Stack trace
+      logs_json:
+        type: string
+        title: 执行日志JSON | [EN] Execution logs JSON
+      metrics_json:
+        type: string
+        title: 性能指标JSON | [EN] Metrics JSON
+      labels_json:
+        type: string
+        title: 标签JSON | [EN] Labels JSON
+      created_at:
+        type: string
+        format: date-time
+        title: 创建时间 | [EN] Created at
+      updated_at:
+        type: string
+        format: date-time
+        title: 更新时间 | [EN] Updated at
+    title: |-
+      执行快照信息
+      [EN] Execution snapshot information
+  schedulerSchedulerExecutionStatus:
+    type: string
+    enum:
+      - SCHEDULER_EXECUTION_STATUS_UNSPECIFIED
+      - SCHEDULER_EXECUTION_STATUS_PENDING
+      - SCHEDULER_EXECUTION_STATUS_RUNNING
+      - SCHEDULER_EXECUTION_STATUS_SUCCESS
+      - SCHEDULER_EXECUTION_STATUS_FAILURE
+      - SCHEDULER_EXECUTION_STATUS_TIMEOUT
+      - SCHEDULER_EXECUTION_STATUS_RETRYING
+      - SCHEDULER_EXECUTION_STATUS_ABORTED
+      - SCHEDULER_EXECUTION_STATUS_SYSTEM_ABORTED
+      - SCHEDULER_EXECUTION_STATUS_SKIPPED
+    default: SCHEDULER_EXECUTION_STATUS_UNSPECIFIED
+    description: |-
+      - SCHEDULER_EXECUTION_STATUS_UNSPECIFIED: 未指定 | [EN] Unspecified
+       - SCHEDULER_EXECUTION_STATUS_PENDING: 等待执行 | [EN] Pending
+       - SCHEDULER_EXECUTION_STATUS_RUNNING: 执行中 | [EN] Running
+       - SCHEDULER_EXECUTION_STATUS_SUCCESS: 执行成功 | [EN] Success
+       - SCHEDULER_EXECUTION_STATUS_FAILURE: 执行失败 | [EN] Failure
+       - SCHEDULER_EXECUTION_STATUS_TIMEOUT: 执行超时 | [EN] Timeout
+       - SCHEDULER_EXECUTION_STATUS_RETRYING: 重试中 | [EN] Retrying
+       - SCHEDULER_EXECUTION_STATUS_ABORTED: 用户中止 | [EN] Aborted
+       - SCHEDULER_EXECUTION_STATUS_SYSTEM_ABORTED: 系统中止 | [EN] System aborted
+       - SCHEDULER_EXECUTION_STATUS_SKIPPED: 跳过执行 | [EN] Skipped
+    title: |-
+      执行状态
+      [EN] Execution status
+  schedulerSchedulerGetExecutionResponse:
+    type: object
+    properties:
+      execution:
+        $ref: '#/definitions/schedulerSchedulerExecutionSnapshotInfo'
+        title: 执行快照 | [EN] Execution snapshot
+    title: |-
+      获取执行快照详情响应
+      [EN] Get execution snapshot detail response
+  schedulerSchedulerGetJobResponse:
+    type: object
+    properties:
+      job:
+        $ref: '#/definitions/schedulerSchedulerJobConfigInfo'
+        title: 任务配置 | [EN] Job config
+    title: |-
+      获取任务配置响应
+      [EN] Get job config response
+  schedulerSchedulerGetThrottleConfigResponse:
+    type: object
+    properties:
+      throttle_config:
+        $ref: '#/definitions/schedulerSchedulerThrottleConfigInfo'
+        title: 节流配置 | [EN] Throttle config
+    title: |-
+      获取节流配置响应
+      [EN] Get throttle config response
+  schedulerSchedulerJobConfigInfo:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+        title: 主键ID | [EN] Primary key ID
+      job_name:
+        type: string
+        title: 任务名称 | [EN] Job name
+      task_config:
+        type: string
+        title: 任务配置JSON | [EN] Task config JSON
+      extra_data:
+        type: string
+        title: 额外配置变量JSON | [EN] Extra data JSON
+      last_executed_at:
+        type: string
+        format: date-time
+        title: 上次执行时间 | [EN] Last executed at
+      next_execution_at:
+        type: string
+        format: date-time
+        title: 下次执行时间 | [EN] Next execution at
+      created_at:
+        type: string
+        format: date-time
+        title: 创建时间 | [EN] Created at
+      updated_at:
+        type: string
+        format: date-time
+        title: 更新时间 | [EN] Updated at
+      state:
+        $ref: '#/definitions/schedulerSchedulerJobState'
+        title: 任务状态 | [EN] Job state
+      job_type:
+        $ref: '#/definitions/schedulerSchedulerJobType'
+        title: 任务类型 | [EN] Job type
+      cron_spec:
+        type: string
+        title: Cron表达式 | [EN] Cron spec
+      execution_count:
+        type: string
+        format: int64
+        title: 执行次数 | [EN] Execution count
+      is_running:
+        type: boolean
+        title: 是否正在运行 | [EN] Whether running
+    title: |-
+      任务配置信息
+      [EN] Job config information
+  schedulerSchedulerJobState:
+    type: string
+    enum:
+      - SCHEDULER_JOB_STATE_UNSPECIFIED
+      - SCHEDULER_JOB_STATE_ACTIVE
+      - SCHEDULER_JOB_STATE_PAUSED
+      - SCHEDULER_JOB_STATE_DISABLED
+      - SCHEDULER_JOB_STATE_ERROR
+    default: SCHEDULER_JOB_STATE_UNSPECIFIED
+    description: |-
+      - SCHEDULER_JOB_STATE_UNSPECIFIED: 未指定 | [EN] Unspecified
+       - SCHEDULER_JOB_STATE_ACTIVE: 活跃 | [EN] Active
+       - SCHEDULER_JOB_STATE_PAUSED: 已暂停 | [EN] Paused
+       - SCHEDULER_JOB_STATE_DISABLED: 已禁用 | [EN] Disabled
+       - SCHEDULER_JOB_STATE_ERROR: 错误 | [EN] Error
+    title: |-
+      任务状态
+      [EN] Job state
+  schedulerSchedulerJobType:
+    type: string
+    enum:
+      - SCHEDULER_JOB_TYPE_UNSPECIFIED
+      - SCHEDULER_JOB_TYPE_CRON
+      - SCHEDULER_JOB_TYPE_PERIODIC
+      - SCHEDULER_JOB_TYPE_MANUAL
+      - SCHEDULER_JOB_TYPE_SYNCX
+    default: SCHEDULER_JOB_TYPE_UNSPECIFIED
+    description: |-
+      - SCHEDULER_JOB_TYPE_UNSPECIFIED: 未指定 | [EN] Unspecified
+       - SCHEDULER_JOB_TYPE_CRON: Cron定时任务 | [EN] Cron job
+       - SCHEDULER_JOB_TYPE_PERIODIC: 周期任务 | [EN] Periodic job
+       - SCHEDULER_JOB_TYPE_MANUAL: 手动触发任务 | [EN] Manual trigger job
+       - SCHEDULER_JOB_TYPE_SYNCX: Syncx任务 | [EN] Syncx job
+    title: |-
+      任务类型
+      [EN] Job type
+  schedulerSchedulerListExecutionsResponse:
+    type: object
+    properties:
+      executions:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/schedulerSchedulerExecutionSnapshotInfo'
+        title: 执行快照列表 | [EN] Execution snapshot list
+      total_count:
+        type: integer
+        format: int32
+        title: 符合条件的总记录数 | [EN] Total count
+      next_page_token:
+        type: string
+        title: 下一页令牌 | [EN] Next page token
+    title: |-
+      列出执行快照响应
+      [EN] List execution snapshots response
+  schedulerSchedulerListJobsResponse:
+    type: object
+    properties:
+      jobs:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/schedulerSchedulerJobConfigInfo'
+        title: 任务列表 | [EN] Job list
+      total_count:
+        type: integer
+        format: int32
+        title: 符合条件的总任务数 | [EN] Total count
+      next_page_token:
+        type: string
+        title: 下一页令牌 | [EN] Next page token
+    title: |-
+      列出任务配置响应
+      [EN] List job configs response
+  schedulerSchedulerOverviewResponse:
+    type: object
+    properties:
+      total_jobs:
+        type: integer
+        format: int32
+        title: 总任务数 | [EN] Total jobs
+      active_jobs:
+        type: integer
+        format: int32
+        title: 活跃任务数 | [EN] Active jobs
+      paused_jobs:
+        type: integer
+        format: int32
+        title: 暂停任务数 | [EN] Paused jobs
+      disabled_jobs:
+        type: integer
+        format: int32
+        title: 禁用任务数 | [EN] Disabled jobs
+      error_jobs:
+        type: integer
+        format: int32
+        title: 错误任务数 | [EN] Error jobs
+      total_count:
+        type: string
+        format: int64
+        title: 总执行数 | [EN] Total count
+      success_count:
+        type: string
+        format: int64
+        title: 成功执行数 | [EN] Success count
+      failure_count:
+        type: string
+        format: int64
+        title: 失败执行数 | [EN] Failure count
+      timeout_count:
+        type: string
+        format: int64
+        title: 超时执行数 | [EN] Timeout count
+      success_rate:
+        type: number
+        format: double
+        title: 成功率 | [EN] Success rate
+      avg_execution_duration_ms:
+        type: number
+        format: double
+        title: 平均执行时长（毫秒） | [EN] Average execution duration (ms)
+      running_executions:
+        type: integer
+        format: int32
+        title: 当前运行中执行数 | [EN] Current running executions
+      scheduler_uptime_ms:
+        type: string
+        format: int64
+        title: 调度器运行时长（毫秒） | [EN] Scheduler uptime (ms)
+      jobs_by_type:
+        type: object
+        additionalProperties:
+          type: integer
+          format: int32
+        title: 按类型统计 | [EN] Jobs by type
+    title: |-
+      调度器概览响应
+      [EN] Scheduler overview response
+  schedulerSchedulerPauseJobResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        title: 是否成功 | [EN] Whether success
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+    title: |-
+      暂停任务响应
+      [EN] Pause job response
+  schedulerSchedulerResumeJobResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        title: 是否成功 | [EN] Whether success
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+    title: |-
+      恢复任务响应
+      [EN] Resume job response
+  schedulerSchedulerRetryExecutionResponse:
+    type: object
+    properties:
+      accepted:
+        type: boolean
+        title: 是否接受 | [EN] Whether accepted
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+      new_trace_id:
+        type: string
+        title: 新跟踪ID | [EN] New trace ID
+    title: |-
+      重试执行响应
+      [EN] Retry execution response
+  schedulerSchedulerThrottleConfigInfo:
+    type: object
+    properties:
+      cooldown_duration_ms:
+        type: string
+        format: int64
+        title: 冷却时间（毫秒） | [EN] Cooldown duration (ms)
+      sleep_duration_ms:
+        type: string
+        format: int64
+        title: 睡眠时间（毫秒） | [EN] Sleep duration (ms)
+      max_concurrent:
+        type: integer
+        format: int32
+        title: 最大并发数 | [EN] Max concurrent
+      rate_limit:
+        type: integer
+        format: int32
+        title: 速率限制 | [EN] Rate limit
+      burst_size:
+        type: integer
+        format: int32
+        title: 突发大小 | [EN] Burst size
+      max_queue_size:
+        type: integer
+        format: int32
+        title: 最大队列大小 | [EN] Max queue size
+      queue_timeout_ms:
+        type: string
+        format: int64
+        title: 队列超时（毫秒） | [EN] Queue timeout (ms)
+      max_retries:
+        type: integer
+        format: int32
+        title: 最大重试次数 | [EN] Max retries
+      retry_delay_ms:
+        type: string
+        format: int64
+        title: 重试延迟（毫秒） | [EN] Retry delay (ms)
+      retry_backoff:
+        type: boolean
+        title: 是否启用指数退避 | [EN] Whether exponential backoff
+      max_retry_delay_ms:
+        type: string
+        format: int64
+        title: 最大重试延迟（毫秒） | [EN] Max retry delay (ms)
+    title: |-
+      节流配置信息
+      [EN] Throttle config information
+  schedulerSchedulerTriggerJobResponse:
+    type: object
+    properties:
+      accepted:
+        type: boolean
+        title: 是否接受 | [EN] Whether accepted
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+      trace_id:
+        type: string
+        title: 跟踪ID | [EN] Trace ID
+    title: |-
+      手动触发任务响应
+      [EN] Manual trigger job response
+  schedulerSchedulerUpdateJobResponse:
+    type: object
+    properties:
+      job:
+        $ref: '#/definitions/schedulerSchedulerJobConfigInfo'
+        title: 任务配置 | [EN] Job config
+    title: |-
+      更新任务配置响应
+      [EN] Update job config response
+  schedulerSchedulerUpdateThrottleConfigResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        title: 是否成功 | [EN] Whether success
+      message:
+        type: string
+        title: 响应描述 | [EN] Response message
+    title: |-
+      更新节流配置响应
+      [EN] Update throttle config response
