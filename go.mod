@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0
 	github.com/kamalyes/go-cachex v0.5.0
-	github.com/kamalyes/go-config v0.24.0
+	github.com/kamalyes/go-config v0.25.0
 	github.com/kamalyes/go-logger v0.8.0
 	github.com/kamalyes/go-sqlbuilder v0.8.0
 	github.com/kamalyes/go-toolbox v0.19.0
@@ -27,7 +27,7 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/kamalyes/go-argus v0.5.0 // indirect
+	github.com/kamalyes/go-argus v0.5.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
