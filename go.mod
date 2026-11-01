@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.29.0
 	github.com/kamalyes/go-cachex v0.5.0
-	github.com/kamalyes/go-config v0.25.0
+	github.com/kamalyes/go-config v0.25.1
 	github.com/kamalyes/go-logger v0.8.0
 	github.com/kamalyes/go-sqlbuilder v0.8.0
 	github.com/kamalyes/go-toolbox v0.19.0
