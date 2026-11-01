@@ -1,4 +1,4 @@
-﻿/*
+/*
  * @Author: kamalyes 501893067@qq.com
  * @Date: 2025-12-23 21:30:00
  * @LastEditors: kamalyes 501893067@qq.com
@@ -18,10 +18,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kamalyes/kronos-scheduler/job"
-	"github.com/kamalyes/kronos-scheduler/logger"
 	"github.com/kamalyes/go-toolbox/pkg/breaker"
 	"github.com/kamalyes/go-toolbox/pkg/mathx"
+	"github.com/kamalyes/kronos-scheduler/job"
+	"github.com/kamalyes/kronos-scheduler/logger"
 )
 
 // JobWrapper 任务包装器 - 用于装饰任务，添加额外行为
