@@ -7,13 +7,13 @@ require (
 	github.com/kamalyes/go-cachex v0.6.0
 	github.com/kamalyes/go-config v0.25.1
 	github.com/kamalyes/go-logger v0.10.0
-	github.com/kamalyes/go-sqlbuilder v0.8.0
+	github.com/kamalyes/go-sqlbuilder v0.9.0
 	github.com/kamalyes/go-toolbox v0.19.3
 	github.com/redis/go-redis/v9 v9.18.0
 	github.com/stretchr/testify v1.12.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20260414002931-afd174a4e478
 	google.golang.org/grpc v1.82.1
-	google.golang.org/protobuf v1.36.11
+	google.golang.org/protobuf v1.36.12
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.31.1
 )
